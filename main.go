@@ -26,7 +26,10 @@ func main() {
 	router.GET("/baseballPlayers/:id", getBaseballPlayerByID)
 	router.POST("/baseballPlayers", postBaseballPlayers)
 
-	router.Run("localhost:8080")
+	err := router.Run("localhost:8080")
+	if err != nil {
+		return
+	}
 }
 
 func getBaseballPlayers(c *gin.Context) {
