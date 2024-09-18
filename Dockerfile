@@ -1,28 +1,12 @@
-FROM golang:1.23-alpine as builder
-RUN apk update && apk add --no-cache git
+FROM golang
 
-WORKDIR /tmp/app
+RUN mkdir /app
 
-COPY go.mod go.sum ./
+ADD . /app
 
-RUN go mod download
+WORKDIR /app
 
-COPY . .
-
-# Unit tests
-RUN CGO_ENABLED=0 go test -v
-
-# Build the Go app
-RUN go build -o ./out/app .
-
-FROM golang:1.23-alpine
-RUN apk --no-cache add ca-certificates
-
-WORKDIR /root/
-
-COPY --from=builder /app/main .
-COPY --from=builder /app/.env .
+RUN go build -o main ./main.go
 
 EXPOSE 8080
-
-CMD ["./main"]
+CMD [ "/app/main" ]
